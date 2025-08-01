@@ -1,0 +1,25 @@
+name: radiokapp
+description: "تطبيق راديو ك"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.7.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  just_audio: ^0.10.4
+  audio_session: ^0.2.2
+  shared_preferences: ^2.2.2
+  audio_service: ^0.18.18
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
