@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:audio_service/audio_service.dart';
 import 'package:radiokapp/screens/audio_handler.dart' as local_audio;
 import 'package:radiokapp/screens/now_playing_screen.dart';
 
@@ -15,10 +14,11 @@ class NowPlayingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<PlaybackState>(
-      stream: audioHandler.playbackState,
+    return StreamBuilder<bool>(
+      stream:
+          audioHandler.playbackState.map((s) => s.playing).distinct(),
       builder: (context, snapshot) {
-        final isPlaying = snapshot.data?.playing ?? false;
+        final isPlaying = snapshot.data ?? false;
 
         if (!isPlaying || currentStationName == null) {
           return const SizedBox(); // لا تظهر الشريط إذا لا يوجد بث
