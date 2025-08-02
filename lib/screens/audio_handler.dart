@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
 
 class AudioHandler extends BaseAudioHandler with SeekHandler {
   final AudioPlayer _player = AudioPlayer();
+  late final StreamSubscription<PlaybackEvent> subscription;
 
   AudioHandler() {
     _init();
@@ -23,7 +26,7 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
       ),
     );
 
-    _player.playbackEventStream.listen((event) {
+    subscription = _player.playbackEventStream.listen((event) {
       final playing = _player.playing;
       final processingState = _translateProcessingState(
         _player.processingState,
@@ -76,6 +79,13 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> stop() async {
     await _player.stop();
     mediaItem.add(null);
+  }
+
+  @override
+  Future<void> close() async {
+    await subscription.cancel();
+    await _player.dispose();
+    return super.close();
   }
 
   Future<void> setUrl(String url) async {
