@@ -7,8 +7,34 @@ void main() async {
   runApp(const MyAppEntry());
 }
 
-class MyAppEntry extends StatelessWidget {
+class MyAppEntry extends StatefulWidget {
   const MyAppEntry({super.key});
+
+  @override
+  State<MyAppEntry> createState() => _MyAppEntryState();
+}
+
+class _MyAppEntryState extends State<MyAppEntry> {
+  bool _isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((prefs) {
+      setState(() {
+        _isDarkMode = prefs.getBool('darkMode') ?? false;
+      });
+    });
+  }
+
+  void _setDarkMode(bool value) {
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setBool('darkMode', value);
+    });
+    setState(() {
+      _isDarkMode = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +42,24 @@ class MyAppEntry extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.system,
-      home: const WelcomeScreen(),
+      themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      home: WelcomeScreen(
+        isDarkMode: _isDarkMode,
+        onThemeChanged: _setDarkMode,
+      ),
     );
   }
 }
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+  const WelcomeScreen({
+    super.key,
+    required this.isDarkMode,
+    required this.onThemeChanged,
+  });
+
+  final bool isDarkMode;
+  final ValueChanged<bool> onThemeChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +80,12 @@ class WelcomeScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const MyApp()),
+                    MaterialPageRoute(
+                      builder: (context) => MyApp(
+                        isDarkMode: isDarkMode,
+                        onThemeChanged: onThemeChanged,
+                      ),
+                    ),
                   );
                 },
                 child: const Text('ابدأ الاستماع'),
@@ -58,7 +99,14 @@ class WelcomeScreen extends StatelessWidget {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({
+    super.key,
+    required this.isDarkMode,
+    required this.onThemeChanged,
+  });
+
+  final bool isDarkMode;
+  final ValueChanged<bool> onThemeChanged;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -69,7 +117,7 @@ class _MyAppState extends State<MyApp> {
   late SharedPreferences _prefs;
 
   List<RadioStation> _stations = [];
-  bool _isDarkMode = false;
+  late bool _isDarkMode;
   int _currentIndex = 0;
   double _currentVolume = 1.0;
   String? _currentStationUrl;
@@ -80,12 +128,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _player = AudioPlayer();
+    _isDarkMode = widget.isDarkMode;
     _initApp();
   }
 
   Future<void> _initApp() async {
     _prefs = await SharedPreferences.getInstance();
-    _isDarkMode = _prefs.getBool('darkMode') ?? false;
     _loadStations();
     setState(() {});
   }
@@ -184,7 +232,7 @@ class _MyAppState extends State<MyApp> {
 
   void _toggleDarkMode() {
     _isDarkMode = !_isDarkMode;
-    _prefs.setBool('darkMode', _isDarkMode);
+    widget.onThemeChanged(_isDarkMode);
     setState(() {});
   }
 
@@ -202,14 +250,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = _isDarkMode ? ThemeData.dark() : ThemeData.light();
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: theme,
-      home: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Scaffold(
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
           appBar: AppBar(
             title: const Text('تطبيق راديو يلا'),
             actions: [
