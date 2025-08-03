@@ -37,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isReady = false;
   int _currentIndex = 0;
   String? _currentStationUrl;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -84,17 +85,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _selectStation(RadioStation station) async {
-    if (_currentStationUrl == station.url) {
-      await widget.audioHandler.stop();
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      if (_currentStationUrl == station.url) {
+        await widget.audioHandler.stop();
+        setState(() {
+          _currentStationUrl = null;
+        });
+      } else {
+        await Future.wait([
+          widget.audioHandler.stop(),
+          widget.audioHandler.setUrl(station.url),
+        ]);
+        await widget.audioHandler.play();
+        setState(() {
+          _currentStationUrl = station.url;
+        });
+      }
+    } finally {
       setState(() {
-        _currentStationUrl = null;
-      });
-    } else {
-      await widget.audioHandler.stop();
-      await widget.audioHandler.setUrl(station.url);
-      await widget.audioHandler.play();
-      setState(() {
-        _currentStationUrl = station.url;
+        _isLoading = false;
       });
     }
   }
@@ -119,19 +132,25 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        body: Column(
+        body: Stack(
           children: [
-            Expanded(child: _buildCurrentScreen()),
-            NowPlayingBar(
-              audioHandler: widget.audioHandler,
-              currentStationName:
-                  _stations
-                      .firstWhere(
-                        (s) => s.url == _currentStationUrl,
-                        orElse: () => RadioStation(name: '', url: ''),
-                      )
-                      .name,
+            Column(
+              children: [
+                Expanded(child: _buildCurrentScreen()),
+                NowPlayingBar(
+                  audioHandler: widget.audioHandler,
+                  currentStationName:
+                      _stations
+                          .firstWhere(
+                            (s) => s.url == _currentStationUrl,
+                            orElse: () => RadioStation(name: '', url: ''),
+                          )
+                          .name,
+                ),
+              ],
             ),
+            if (_isLoading)
+              const Center(child: CircularProgressIndicator()),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
