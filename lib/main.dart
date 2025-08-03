@@ -148,7 +148,6 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _playStation(RadioStation station) async {
     try {
-      await _player.stop();
       await _player.setUrl(station.url);
       await _player.play();
       setState(() {
