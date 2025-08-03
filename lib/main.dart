@@ -87,6 +87,7 @@ class _MyAppState extends State<MyApp> {
     _prefs = await SharedPreferences.getInstance();
     _isDarkMode = _prefs.getBool('darkMode') ?? false;
     _loadStations();
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -151,12 +152,14 @@ class _MyAppState extends State<MyApp> {
       await _player.stop();
       await _player.setUrl(station.url);
       await _player.play();
+      if (!mounted) return;
       setState(() {
         _currentStationUrl = station.url;
         _nowPlaying = station.name;
         _errorMessage = null;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorMessage = 'فشل تشغيل المحطة: $e';
         _nowPlaying = null;
@@ -167,6 +170,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _stopPlaying() async {
     await _player.stop();
+    if (!mounted) return;
     setState(() {
       _currentStationUrl = null;
       _nowPlaying = null;
