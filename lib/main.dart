@@ -188,12 +188,6 @@ class _MyAppState extends State<MyApp> {
     setState(() {});
   }
 
-  void _changeVolume(double volume) {
-    _currentVolume = volume;
-    _player.setVolume(volume);
-    setState(() {});
-  }
-
   @override
   void dispose() {
     _player.dispose();
@@ -218,24 +212,32 @@ class _MyAppState extends State<MyApp> {
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
-                    builder:
-                        (_) => Padding(
+                    builder: (_) {
+                      double localVolume = _currentVolume;
+                      return StatefulBuilder(
+                        builder: (context, setState) => Padding(
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const Text('تحكم في الصوت'),
                               Slider(
-                                value: _currentVolume,
+                                value: localVolume,
                                 min: 0,
                                 max: 1,
                                 divisions: 10,
-                                label: '${(_currentVolume * 100).round()}%',
-                                onChanged: _changeVolume,
+                                label: '${(localVolume * 100).round()}%',
+                                onChanged: (value) {
+                                  setState(() => localVolume = value);
+                                  _player.setVolume(value);
+                                  _currentVolume = value;
+                                },
                               ),
                             ],
                           ),
                         ),
+                      );
+                    },
                   );
                 },
               ),
