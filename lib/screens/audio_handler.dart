@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:just_audio/just_audio.dart';
 
 class AudioHandler extends BaseAudioHandler with SeekHandler {
   final AudioPlayer _player = AudioPlayer();
+  StreamSubscription<PlaybackEvent>? _playbackEventSubscription;
 
   AudioHandler() {
     _init();
@@ -23,7 +26,7 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
       ),
     );
 
-    _player.playbackEventStream.listen((event) {
+    _playbackEventSubscription = _player.playbackEventStream.listen((event) {
       final playing = _player.playing;
       final processingState = _translateProcessingState(
         _player.processingState,
@@ -101,5 +104,12 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
     } catch (e) {
       print('تعذر ضبط مستوى الصوت: $e');
     }
+  }
+
+  @override
+  Future<void> dispose() async {
+    await _playbackEventSubscription?.cancel();
+    await _player.dispose();
+    await super.dispose();
   }
 }
