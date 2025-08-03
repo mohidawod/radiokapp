@@ -66,7 +66,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final AudioPlayer _player;
-  late SharedPreferences _prefs;
+  SharedPreferences? _prefs;
 
   List<RadioStation> _stations = [];
   bool _isDarkMode = false;
@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _initApp() async {
     _prefs = await SharedPreferences.getInstance();
-    _isDarkMode = _prefs.getBool('darkMode') ?? false;
+    _isDarkMode = _prefs?.getBool('darkMode') ?? false;
     _loadStations();
     setState(() {});
   }
@@ -140,7 +140,7 @@ class _MyAppState extends State<MyApp> {
       ),
     ];
 
-    final favorites = _prefs.getStringList('favorites') ?? [];
+    final favorites = _prefs?.getStringList('favorites') ?? [];
     for (var station in _stations) {
       station.isFavorite = favorites.contains(station.name);
     }
@@ -175,7 +175,7 @@ class _MyAppState extends State<MyApp> {
 
   void _toggleFavorite(RadioStation station) {
     station.isFavorite = !station.isFavorite;
-    _prefs.setStringList(
+    _prefs?.setStringList(
       'favorites',
       _stations.where((s) => s.isFavorite).map((s) => s.name).toList(),
     );
@@ -184,7 +184,7 @@ class _MyAppState extends State<MyApp> {
 
   void _toggleDarkMode() {
     _isDarkMode = !_isDarkMode;
-    _prefs.setBool('darkMode', _isDarkMode);
+    _prefs?.setBool('darkMode', _isDarkMode);
     setState(() {});
   }
 
