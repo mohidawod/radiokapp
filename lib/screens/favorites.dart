@@ -23,7 +23,6 @@ class FavoritesScreen extends StatelessWidget {
     if (currentStationUrl == url) {
       await audioHandler.stop();
     } else {
-      await audioHandler.stop();
       await audioHandler.setUrl(url);
       await audioHandler.play();
     }

@@ -90,7 +90,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _currentStationUrl = null;
       });
     } else {
-      await widget.audioHandler.stop();
       await widget.audioHandler.setUrl(station.url);
       await widget.audioHandler.play();
       setState(() {
