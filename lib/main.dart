@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:audio_session/audio_session.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,6 +85,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initApp() async {
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration.speech());
+
     _prefs = await SharedPreferences.getInstance();
     _isDarkMode = _prefs.getBool('darkMode') ?? false;
     _loadStations();
