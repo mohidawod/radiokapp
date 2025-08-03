@@ -75,6 +75,7 @@ class _MyAppState extends State<MyApp> {
   String? _currentStationUrl;
   String? _errorMessage;
   String? _nowPlaying;
+  bool _isBusy = false;
 
   @override
   void initState() {
@@ -147,6 +148,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _playStation(RadioStation station) async {
+    if (_isBusy) return;
+    _isBusy = true;
     try {
       await _player.stop();
       await _player.setUrl(station.url);
@@ -162,6 +165,8 @@ class _MyAppState extends State<MyApp> {
         _nowPlaying = null;
         _currentStationUrl = null;
       });
+    } finally {
+      _isBusy = false;
     }
   }
 

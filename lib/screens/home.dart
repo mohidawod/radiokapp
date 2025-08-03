@@ -37,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isReady = false;
   int _currentIndex = 0;
   String? _currentStationUrl;
+  bool _isBusy = false;
 
   @override
   void initState() {
@@ -84,18 +85,24 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _selectStation(RadioStation station) async {
-    if (_currentStationUrl == station.url) {
-      await widget.audioHandler.stop();
-      setState(() {
-        _currentStationUrl = null;
-      });
-    } else {
-      await widget.audioHandler.stop();
-      await widget.audioHandler.setUrl(station.url);
-      await widget.audioHandler.play();
-      setState(() {
-        _currentStationUrl = station.url;
-      });
+    if (_isBusy) return;
+    _isBusy = true;
+    try {
+      if (_currentStationUrl == station.url) {
+        await widget.audioHandler.stop();
+        setState(() {
+          _currentStationUrl = null;
+        });
+      } else {
+        await widget.audioHandler.stop();
+        await widget.audioHandler.setUrl(station.url);
+        await widget.audioHandler.play();
+        setState(() {
+          _currentStationUrl = station.url;
+        });
+      }
+    } finally {
+      _isBusy = false;
     }
   }
 
