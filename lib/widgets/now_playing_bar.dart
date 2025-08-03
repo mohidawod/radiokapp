@@ -58,9 +58,21 @@ class NowPlayingBar extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.stop, color: Colors.white),
-                  onPressed: () => audioHandler.stop(),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        isPlaying ? Icons.pause : Icons.play_arrow,
+                        color: Colors.white,
+                      ),
+                      onPressed:
+                          isPlaying ? audioHandler.pause : audioHandler.play,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.stop, color: Colors.white),
+                      onPressed: audioHandler.stop,
+                    ),
+                  ],
                 ),
               ],
             ),
