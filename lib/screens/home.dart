@@ -169,57 +169,59 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildHomeScreen() {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: GridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 0.9,
-        children:
-            _stations.map((station) {
-              final isCurrent = _currentStationUrl == station.url;
-              return Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () => _selectStation(station),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.radio,
-                          size: 40,
-                          color: isCurrent ? Colors.blue : Colors.grey,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          station.name,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            station.isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color:
-                                station.isFavorite ? Colors.red : Colors.grey,
-                          ),
-                          onPressed: () => _toggleFavorite(station),
-                        ),
-                      ],
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.9,
+        ),
+        itemCount: _stations.length,
+        itemBuilder: (context, index) {
+          final station = _stations[index];
+          final isCurrent = _currentStationUrl == station.url;
+          return Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () => _selectStation(station),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.radio,
+                      size: 40,
+                      color: isCurrent ? Colors.blue : Colors.grey,
                     ),
-                  ),
+                    const SizedBox(height: 8),
+                    Text(
+                      station.name,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        station.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: station.isFavorite ? Colors.red : Colors.grey,
+                      ),
+                      onPressed: () => _toggleFavorite(station),
+                    ),
+                  ],
                 ),
-              );
-            }).toList(),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
