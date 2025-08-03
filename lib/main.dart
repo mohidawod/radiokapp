@@ -13,6 +13,8 @@ Future<void> main() async {
       androidNotificationChannelId: 'com.radiokapp.channel.audio',
       androidNotificationChannelName: 'Radio Playback',
       androidNotificationOngoing: true,
+      androidStopForegroundOnPause: true,
+      androidNotificationIcon: 'mipmap/ic_launcher',
     ),
   );
   runApp(MyApp(audioHandler: handler));

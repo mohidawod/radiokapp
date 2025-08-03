@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } else {
       await widget.audioHandler.stop();
-      await widget.audioHandler.setUrl(station.url);
+      await widget.audioHandler.setUrl(station.url, title: station.name);
       await widget.audioHandler.play();
       setState(() {
         _currentStationUrl = station.url;

@@ -1,7 +1,8 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:just_audio/just_audio.dart';
 
+/// مسؤول عن إدارة تشغيل الصوت ونشر الحالة لإظهار إشعارات التحكم.
 class AudioHandler extends BaseAudioHandler with SeekHandler {
   final AudioPlayer _player = AudioPlayer();
 
@@ -13,42 +14,50 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
 
-    mediaItem.add(
-      MediaItem(
-        id: 'https://example.com/stream.mp3',
-        album: 'راديو مباشر',
-        title: 'قناة البث',
-        artist: 'Radio K',
-        artUri: Uri.parse('https://via.placeholder.com/150'),
-      ),
-    );
-
     _player.playbackEventStream.listen((event) {
-      final playing = _player.playing;
-      final processingState = _translateProcessingState(
-        _player.processingState,
-      );
+      _broadcastState();
+    });
+  }
 
-      playbackState.add(
-        PlaybackState(
-          controls: [
-            MediaControl.stop,
-            playing ? MediaControl.pause : MediaControl.play,
-          ],
-          systemActions: const {
-            MediaAction.play,
-            MediaAction.pause,
-            MediaAction.stop,
-          },
-          androidCompactActionIndices: const [0, 1],
-          playing: playing,
-          processingState: processingState,
-          updatePosition: _player.position,
-          bufferedPosition: _player.bufferedPosition,
-          speed: _player.speed,
+  /// تحميل عنوان البث وتعيين معلوماته لظهور في الإشعار.
+  Future<void> setUrl(String url, {String title = 'قناة البث'}) async {
+    try {
+      await _player.setUrl(url);
+      mediaItem.add(
+        MediaItem(
+          id: url,
+          album: 'راديو مباشر',
+          title: title,
+          artist: 'Radio K',
+          artUri: Uri.parse('https://via.placeholder.com/150'),
         ),
       );
-    });
+    } catch (e) {
+      print('حدث خطأ أثناء تحميل البث: $e');
+    }
+  }
+
+  void _broadcastState() {
+    final playing = _player.playing;
+    playbackState.add(
+      PlaybackState(
+        controls: [
+          playing ? MediaControl.pause : MediaControl.play,
+          MediaControl.stop,
+        ],
+        systemActions: const {
+          MediaAction.play,
+          MediaAction.pause,
+          MediaAction.stop,
+        },
+        androidCompactActionIndices: const [0, 1],
+        playing: playing,
+        processingState: _translateProcessingState(_player.processingState),
+        updatePosition: _player.position,
+        bufferedPosition: _player.bufferedPosition,
+        speed: _player.speed,
+      ),
+    );
   }
 
   AudioProcessingState _translateProcessingState(ProcessingState state) {
@@ -67,32 +76,22 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
-  Future<void> play() => _player.play();
+  Future<void> play() async {
+    await _player.play();
+    _broadcastState();
+  }
 
   @override
-  Future<void> pause() => _player.pause();
+  Future<void> pause() async {
+    await _player.pause();
+    _broadcastState();
+  }
 
   @override
   Future<void> stop() async {
     await _player.stop();
+    _broadcastState();
     mediaItem.add(null);
-  }
-
-  Future<void> setUrl(String url) async {
-    try {
-      await _player.setUrl(url);
-      mediaItem.add(
-        MediaItem(
-          id: url,
-          album: 'راديو مباشر',
-          title: 'قناة البث',
-          artist: 'Radio K',
-          artUri: Uri.parse('https://via.placeholder.com/150'),
-        ),
-      );
-    } catch (e) {
-      print('حدث خطأ أثناء تحميل البث: $e');
-    }
   }
 
   Future<void> setVolume(double volume) async {
@@ -103,3 +102,4 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
     }
   }
 }
+
