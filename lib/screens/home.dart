@@ -196,12 +196,27 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: isCurrent ? Colors.blue : Colors.grey,
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          station.name,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        SizedBox(
+                          width: double.infinity,
+                          child: Row(
+                            children: [
+                              AnimatedOpacity(
+                                opacity: isCurrent ? 1.0 : 0.0,
+                                duration: const Duration(milliseconds: 300),
+                                child: const Icon(Icons.graphic_eq, size: 20),
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  station.name,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         IconButton(
@@ -240,7 +255,22 @@ class _HomeScreenState extends State<HomeScreen> {
             Icons.radio,
             color: isCurrent ? Colors.blue : Colors.grey,
           ),
-          title: Text(station.name),
+          title: Row(
+            children: [
+              AnimatedOpacity(
+                opacity: isCurrent ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                child: const Icon(Icons.graphic_eq, size: 20),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  station.name,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
           trailing: IconButton(
             icon: const Icon(Icons.favorite, color: Colors.red),
             onPressed: () => _toggleFavorite(station),
