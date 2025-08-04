@@ -204,6 +204,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: isCurrent
+                              ? const Icon(Icons.equalizer,
+                                  key: ValueKey('playing'))
+                              : const SizedBox.shrink(
+                                  key: ValueKey('stopped')),
+                        ),
+                        const SizedBox(height: 8),
                         IconButton(
                           icon: Icon(
                             station.isFavorite
@@ -241,9 +250,20 @@ class _HomeScreenState extends State<HomeScreen> {
             color: isCurrent ? Colors.blue : Colors.grey,
           ),
           title: Text(station.name),
-          trailing: IconButton(
-            icon: const Icon(Icons.favorite, color: Colors.red),
-            onPressed: () => _toggleFavorite(station),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: isCurrent
+                    ? const Icon(Icons.equalizer, key: ValueKey('playing'))
+                    : const SizedBox.shrink(key: ValueKey('stopped')),
+              ),
+              IconButton(
+                icon: const Icon(Icons.favorite, color: Colors.red),
+                onPressed: () => _toggleFavorite(station),
+              ),
+            ],
           ),
           onTap: () => _selectStation(station),
         );

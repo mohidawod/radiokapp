@@ -58,6 +58,14 @@ class FavoritesScreen extends StatelessWidget {
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                child: isCurrent
+                                    ? const Icon(Icons.equalizer,
+                                        key: ValueKey('playing'))
+                                    : const SizedBox.shrink(
+                                        key: ValueKey('stopped')),
+                              ),
                               IconButton(
                                 icon: Icon(
                                   isCurrent ? Icons.stop : Icons.play_arrow,
