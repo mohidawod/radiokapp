@@ -52,18 +52,24 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
               stream: widget.audioHandler.playbackState,
               builder: (context, snapshot) {
                 final isPlaying = snapshot.data?.playing ?? false;
-                return IconButton(
-                  iconSize: 64,
-                  icon: Icon(
-                    isPlaying ? Icons.stop_circle : Icons.play_circle_fill,
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  transitionBuilder: (child, animation) =>
+                      ScaleTransition(scale: animation, child: child),
+                  child: IconButton(
+                    key: ValueKey(isPlaying),
+                    iconSize: 64,
+                    icon: Icon(
+                      isPlaying ? Icons.stop_circle : Icons.play_circle_fill,
+                    ),
+                    onPressed: () {
+                      if (isPlaying) {
+                        widget.audioHandler.stop();
+                      } else {
+                        widget.audioHandler.play();
+                      }
+                    },
                   ),
-                  onPressed: () {
-                    if (isPlaying) {
-                      widget.audioHandler.stop();
-                    } else {
-                      widget.audioHandler.play();
-                    }
-                  },
                 );
               },
             ),

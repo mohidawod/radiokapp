@@ -204,15 +204,22 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        IconButton(
-                          icon: Icon(
-                            station.isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color:
-                                station.isFavorite ? Colors.red : Colors.grey,
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          transitionBuilder: (child, animation) =>
+                              ScaleTransition(scale: animation, child: child),
+                          child: IconButton(
+                            key: ValueKey(station.isFavorite),
+                            icon: Icon(
+                              station.isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: station.isFavorite
+                                  ? Colors.red
+                                  : Colors.grey,
+                            ),
+                            onPressed: () => _toggleFavorite(station),
                           ),
-                          onPressed: () => _toggleFavorite(station),
                         ),
                       ],
                     ),
@@ -241,9 +248,15 @@ class _HomeScreenState extends State<HomeScreen> {
             color: isCurrent ? Colors.blue : Colors.grey,
           ),
           title: Text(station.name),
-          trailing: IconButton(
-            icon: const Icon(Icons.favorite, color: Colors.red),
-            onPressed: () => _toggleFavorite(station),
+          trailing: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            transitionBuilder: (child, animation) =>
+                ScaleTransition(scale: animation, child: child),
+            child: IconButton(
+              key: ValueKey(station.isFavorite),
+              icon: const Icon(Icons.favorite, color: Colors.red),
+              onPressed: () => _toggleFavorite(station),
+            ),
           ),
           onTap: () => _selectStation(station),
         );
