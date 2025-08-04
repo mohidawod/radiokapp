@@ -64,9 +64,10 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   late final AudioPlayer _player;
   late SharedPreferences _prefs;
+  late final AnimationController _iconController;
 
   List<RadioStation> _stations = [];
   bool _isDarkMode = false;
@@ -80,6 +81,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _player = AudioPlayer();
+    _iconController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2));
     _initApp();
   }
 
@@ -151,6 +154,7 @@ class _MyAppState extends State<MyApp> {
       await _player.stop();
       await _player.setUrl(station.url);
       await _player.play();
+      _iconController.repeat();
       setState(() {
         _currentStationUrl = station.url;
         _nowPlaying = station.name;
@@ -167,6 +171,8 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _stopPlaying() async {
     await _player.stop();
+    _iconController.stop();
+    _iconController.reset();
     setState(() {
       _currentStationUrl = null;
       _nowPlaying = null;
@@ -197,6 +203,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     _player.dispose();
+    _iconController.dispose();
     super.dispose();
   }
 
@@ -321,7 +328,12 @@ class _MyAppState extends State<MyApp> {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
-        leading: const Icon(Icons.radio),
+        leading: isPlaying
+            ? RotationTransition(
+                turns: _iconController,
+                child: const Icon(Icons.radio),
+              )
+            : const Icon(Icons.radio),
         title: Text(station.name),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
