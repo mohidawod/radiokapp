@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'widgets/station_card.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -318,27 +319,15 @@ class _MyAppState extends State<MyApp> {
 
   Widget _buildStationTile(RadioStation station) {
     final isPlaying = _currentStationUrl == station.url;
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        leading: const Icon(Icons.radio),
-        title: Text(station.name),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: Icon(
-                station.isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: station.isFavorite ? Colors.red : null,
-              ),
-              onPressed: () => _toggleFavorite(station),
-            ),
-            IconButton(
-              icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow),
-              onPressed: isPlaying ? _stopPlaying : () => _playStation(station),
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: StationCard(
+        name: station.name,
+        isPlaying: isPlaying,
+        isFavorite: station.isFavorite,
+        onTap:
+            isPlaying ? _stopPlaying : () => _playStation(station),
+        onToggleFavorite: () => _toggleFavorite(station),
       ),
     );
   }
