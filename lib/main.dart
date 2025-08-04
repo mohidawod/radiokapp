@@ -334,7 +334,14 @@ class _MyAppState extends State<MyApp> {
               onPressed: () => _toggleFavorite(station),
             ),
             IconButton(
-              icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow),
+              icon: AnimatedScale(
+                scale: isPlaying ? 1.2 : 1.0,
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  isPlaying ? Icons.stop : Icons.play_arrow,
+                  color: isPlaying ? Colors.green : null,
+                ),
+              ),
               onPressed: isPlaying ? _stopPlaying : () => _playStation(station),
             ),
           ],
