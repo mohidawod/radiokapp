@@ -299,7 +299,11 @@ class _MyAppState extends State<MyApp> {
       final favs = _stations.where((s) => s.isFavorite).toList();
       return favs.isEmpty
           ? const Center(child: Text('لا توجد محطات مفضلة بعد'))
-          : ListView(children: favs.map(_buildStationTile).toList());
+          : ListView.builder(
+              itemCount: favs.length,
+              itemBuilder: (context, index) =>
+                  _buildStationTile(favs[index]),
+            );
     } else if (_currentIndex == 2) {
       return const Center(
         child: Padding(
@@ -312,7 +316,11 @@ class _MyAppState extends State<MyApp> {
         ),
       );
     } else {
-      return ListView(children: _stations.map(_buildStationTile).toList());
+      return ListView.builder(
+        itemCount: _stations.length,
+        itemBuilder: (context, index) =>
+            _buildStationTile(_stations[index]),
+      );
     }
   }
 
