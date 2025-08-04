@@ -100,6 +100,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    widget.audioHandler.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (!_isReady) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
