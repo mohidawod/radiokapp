@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:radiokapp/models/radio_station.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -344,14 +345,4 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class RadioStation {
-  final String name;
-  final String url;
-  bool isFavorite;
-
-  RadioStation({
-    required this.name,
-    required this.url,
-    this.isFavorite = false,
-  });
 }
