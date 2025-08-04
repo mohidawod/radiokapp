@@ -322,7 +322,22 @@ class _MyAppState extends State<MyApp> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
         leading: const Icon(Icons.radio),
-        title: Text(station.name),
+        title: Row(
+          children: [
+            AnimatedOpacity(
+              opacity: isPlaying ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: const Icon(Icons.graphic_eq, size: 20),
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                station.name,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

@@ -51,9 +51,21 @@ class FavoritesScreen extends StatelessWidget {
                             Icons.radio,
                             color: isCurrent ? Colors.blue : Colors.grey,
                           ),
-                          title: Text(
-                            station['name'] ?? 'محطة غير معروفة',
-                            overflow: TextOverflow.ellipsis,
+                          title: Row(
+                            children: [
+                              AnimatedOpacity(
+                                opacity: isCurrent ? 1.0 : 0.0,
+                                duration: const Duration(milliseconds: 300),
+                                child: const Icon(Icons.graphic_eq, size: 20),
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  station['name'] ?? 'محطة غير معروفة',
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
