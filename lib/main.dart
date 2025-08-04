@@ -75,6 +75,7 @@ class _MyAppState extends State<MyApp> {
   String? _currentStationUrl;
   String? _errorMessage;
   String? _nowPlaying;
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -203,11 +204,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final theme = _isDarkMode ? ThemeData.dark() : ThemeData.light();
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: theme,
-      home: Directionality(
+    return Theme(
+      data: theme,
+      child: Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
           appBar: AppBar(
@@ -218,24 +217,23 @@ class _MyAppState extends State<MyApp> {
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
-                    builder:
-                        (_) => Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('تحكم في الصوت'),
-                              Slider(
-                                value: _currentVolume,
-                                min: 0,
-                                max: 1,
-                                divisions: 10,
-                                label: '${(_currentVolume * 100).round()}%',
-                                onChanged: _changeVolume,
-                              ),
-                            ],
+                    builder: (_) => Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('تحكم في الصوت'),
+                          Slider(
+                            value: _currentVolume,
+                            min: 0,
+                            max: 1,
+                            divisions: 10,
+                            label: '${(_currentVolume * 100).round()}%',
+                            onChanged: _changeVolume,
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
                   );
                 },
               ),
@@ -268,7 +266,20 @@ class _MyAppState extends State<MyApp> {
                     style: const TextStyle(color: Colors.red),
                   ),
                 ),
-              Expanded(child: _buildCurrentScreen()),
+              Expanded(
+                child: Navigator(
+                  key: _navigatorKey,
+                  onPopPage: (route, result) => route.didPop(result),
+                  pages: [
+                    if (_currentIndex == 0)
+                      MaterialPage(child: _buildHomeScreen()),
+                    if (_currentIndex == 1)
+                      MaterialPage(child: _buildFavoritesScreen()),
+                    if (_currentIndex == 2)
+                      MaterialPage(child: _buildAboutScreen()),
+                  ],
+                ),
+              ),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -294,26 +305,28 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Widget _buildCurrentScreen() {
-    if (_currentIndex == 1) {
-      final favs = _stations.where((s) => s.isFavorite).toList();
-      return favs.isEmpty
-          ? const Center(child: Text('لا توجد محطات مفضلة بعد'))
-          : ListView(children: favs.map(_buildStationTile).toList());
-    } else if (_currentIndex == 2) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            'تطبيق راديو بسيط مبني بـ Flutter',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18),
-          ),
+  Widget _buildHomeScreen() {
+    return ListView(children: _stations.map(_buildStationTile).toList());
+  }
+
+  Widget _buildFavoritesScreen() {
+    final favs = _stations.where((s) => s.isFavorite).toList();
+    return favs.isEmpty
+        ? const Center(child: Text('لا توجد محطات مفضلة بعد'))
+        : ListView(children: favs.map(_buildStationTile).toList());
+  }
+
+  Widget _buildAboutScreen() {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Text(
+          'تطبيق راديو بسيط مبني بـ Flutter',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18),
         ),
-      );
-    } else {
-      return ListView(children: _stations.map(_buildStationTile).toList());
-    }
+      ),
+    );
   }
 
   Widget _buildStationTile(RadioStation station) {
