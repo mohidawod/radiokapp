@@ -40,7 +40,14 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.radio, size: 100, color: Colors.blue.shade700),
+            Hero(
+              tag: widget.stationName ?? '',
+              child: Icon(
+                Icons.radio,
+                size: 100,
+                color: Colors.blue.shade700,
+              ),
+            ),
             const SizedBox(height: 30),
             Text(
               widget.stationName ?? 'لا يوجد محطة حالياً',

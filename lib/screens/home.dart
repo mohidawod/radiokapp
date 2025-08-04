@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:radiokapp/screens/audio_handler.dart';
 import 'package:radiokapp/widgets/now_playing_bar.dart';
+import 'package:radiokapp/screens/now_playing_screen.dart';
 
 class RadioStation {
   final String name;
@@ -174,17 +175,43 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
         childAspectRatio: 0.9,
-        children:
-            _stations.map((station) {
-              final isCurrent = _currentStationUrl == station.url;
-              return Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+        children: _stations.map((station) {
+          final isCurrent = _currentStationUrl == station.url;
+          return Hero(
+            tag: station.name,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              transform: Matrix4.identity()
+                ..scale(isCurrent ? 1.05 : 1.0),
+              decoration: BoxDecoration(
+                color: isCurrent ? Colors.blue.shade50 : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap: () => _selectStation(station),
+                  onTap: () async {
+                    await _selectStation(station);
+                    if (mounted) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => NowPlayingScreen(
+                            audioHandler: widget.audioHandler,
+                            stationName: station.name,
+                          ),
+                        ),
+                      );
+                    }
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Column(
@@ -218,8 +245,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-              );
-            }).toList(),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
