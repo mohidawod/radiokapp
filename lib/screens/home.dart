@@ -31,16 +31,20 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   List<RadioStation> _stations = [];
   late SharedPreferences _prefs;
   bool _isReady = false;
   int _currentIndex = 0;
   String? _currentStationUrl;
+  late final AnimationController _iconController;
 
   @override
   void initState() {
     super.initState();
+    _iconController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _initPrefsAndLoadStations();
   }
 
@@ -89,6 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _currentStationUrl = null;
       });
+      _iconController.stop();
+      _iconController.reset();
     } else {
       await widget.audioHandler.stop();
       await widget.audioHandler.setUrl(station.url);
@@ -96,7 +102,14 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _currentStationUrl = station.url;
       });
+      _iconController.repeat();
     }
+  }
+
+  @override
+  void dispose() {
+    _iconController.dispose();
+    super.dispose();
   }
 
   @override
@@ -190,10 +203,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.radio,
-                          size: 40,
-                          color: isCurrent ? Colors.blue : Colors.grey,
+                        RotationTransition(
+                          turns: isCurrent
+                              ? _iconController
+                              : const AlwaysStoppedAnimation(0),
+                          child: Icon(
+                            Icons.radio,
+                            size: 40,
+                            color: isCurrent ? Colors.blue : Colors.grey,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -236,9 +254,14 @@ class _HomeScreenState extends State<HomeScreen> {
         final station = favorites[index];
         final isCurrent = _currentStationUrl == station.url;
         return ListTile(
-          leading: Icon(
-            Icons.radio,
-            color: isCurrent ? Colors.blue : Colors.grey,
+          leading: RotationTransition(
+            turns: isCurrent
+                ? _iconController
+                : const AlwaysStoppedAnimation(0),
+            child: Icon(
+              Icons.radio,
+              color: isCurrent ? Colors.blue : Colors.grey,
+            ),
           ),
           title: Text(station.name),
           trailing: IconButton(
