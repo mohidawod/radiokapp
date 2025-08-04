@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:radiokapp/screens/audio_handler.dart' as local_audio;
 import 'package:radiokapp/screens/now_playing_screen.dart';
+import 'package:radiokapp/widgets/animated_wave.dart';
 
 class NowPlayingBar extends StatelessWidget {
   final local_audio.AudioHandler audioHandler;
@@ -49,8 +50,15 @@ class NowPlayingBar extends StatelessWidget {
               ],
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                SizedBox(
+                  width: 40,
+                  child: AnimatedWave(
+                    color: Colors.white,
+                    height: 20,
+                  ),
+                ),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'يتم الآن تشغيل: $currentStationName',
