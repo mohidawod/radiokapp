@@ -58,18 +58,30 @@ class FavoritesScreen extends StatelessWidget {
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              IconButton(
-                                icon: Icon(
-                                  isCurrent ? Icons.stop : Icons.play_arrow,
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 250),
+                                transitionBuilder: (child, animation) =>
+                                    ScaleTransition(scale: animation, child: child),
+                                child: IconButton(
+                                  key: ValueKey(isCurrent),
+                                  icon: Icon(
+                                    isCurrent ? Icons.stop : Icons.play_arrow,
+                                  ),
+                                  onPressed: () => _handleTap(station),
                                 ),
-                                onPressed: () => _handleTap(station),
                               ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 250),
+                                transitionBuilder: (child, animation) =>
+                                    ScaleTransition(scale: animation, child: child),
+                                child: IconButton(
+                                  key: ValueKey("fav_${station['url']}") ,
+                                  icon: const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () => onRemove(station),
                                 ),
-                                onPressed: () => onRemove(station),
                               ),
                             ],
                           ),
