@@ -4,6 +4,7 @@ import 'package:audio_session/audio_session.dart';
 
 class AudioHandler extends BaseAudioHandler with SeekHandler {
   final AudioPlayer _player = AudioPlayer();
+  bool _isDisposed = false;
 
   AudioHandler() {
     _init();
@@ -76,6 +77,7 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> stop() async {
     await _player.stop();
     mediaItem.add(null);
+    await dispose();
   }
 
   Future<void> setUrl(String url) async {
@@ -101,5 +103,11 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
     } catch (e) {
       print('تعذر ضبط مستوى الصوت: $e');
     }
+  }
+
+  Future<void> dispose() async {
+    if (_isDisposed) return;
+    _isDisposed = true;
+    await _player.dispose();
   }
 }
