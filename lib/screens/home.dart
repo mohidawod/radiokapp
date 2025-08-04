@@ -31,17 +31,27 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   List<RadioStation> _stations = [];
   late SharedPreferences _prefs;
   bool _isReady = false;
   int _currentIndex = 0;
   String? _currentStationUrl;
+  late AnimationController _iconController;
 
   @override
   void initState() {
     super.initState();
+    _iconController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2));
     _initPrefsAndLoadStations();
+  }
+
+  @override
+  void dispose() {
+    _iconController.dispose();
+    super.dispose();
   }
 
   Future<void> _initPrefsAndLoadStations() async {
@@ -89,6 +99,8 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _currentStationUrl = null;
       });
+      _iconController.stop();
+      _iconController.reset();
     } else {
       await widget.audioHandler.stop();
       await widget.audioHandler.setUrl(station.url);
@@ -96,6 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _currentStationUrl = station.url;
       });
+      _iconController.repeat();
     }
   }
 
@@ -190,11 +203,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.radio,
-                          size: 40,
-                          color: isCurrent ? Colors.blue : Colors.grey,
-                        ),
+                        isCurrent
+                            ? RotationTransition(
+                                turns: _iconController,
+                                child: const Icon(
+                                  Icons.radio,
+                                  size: 40,
+                                  color: Colors.blue,
+                                ),
+                              )
+                            : const Icon(
+                                Icons.radio,
+                                size: 40,
+                                color: Colors.grey,
+                              ),
                         const SizedBox(height: 8),
                         Text(
                           station.name,
