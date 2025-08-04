@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'widgets/animated_wave.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -322,7 +323,13 @@ class _MyAppState extends State<MyApp> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
         leading: const Icon(Icons.radio),
-        title: Text(station.name),
+        title: Row(
+          children: [
+            AnimatedWave(isActive: isPlaying),
+            const SizedBox(width: 4),
+            Expanded(child: Text(station.name)),
+          ],
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
