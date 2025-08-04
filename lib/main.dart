@@ -64,9 +64,10 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   late final AudioPlayer _player;
   late SharedPreferences _prefs;
+  late final AnimationController _iconController;
 
   List<RadioStation> _stations = [];
   bool _isDarkMode = false;
@@ -80,6 +81,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _player = AudioPlayer();
+    _iconController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _initApp();
   }
 
@@ -156,6 +159,7 @@ class _MyAppState extends State<MyApp> {
         _nowPlaying = station.name;
         _errorMessage = null;
       });
+      _iconController.repeat();
     } catch (e) {
       setState(() {
         _errorMessage = 'فشل تشغيل المحطة: $e';
@@ -171,6 +175,8 @@ class _MyAppState extends State<MyApp> {
       _currentStationUrl = null;
       _nowPlaying = null;
     });
+    _iconController.stop();
+    _iconController.reset();
   }
 
   void _toggleFavorite(RadioStation station) {
@@ -197,6 +203,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     _player.dispose();
+    _iconController.dispose();
     super.dispose();
   }
 
@@ -321,7 +328,10 @@ class _MyAppState extends State<MyApp> {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
-        leading: const Icon(Icons.radio),
+        leading: RotationTransition(
+          turns: isPlaying ? _iconController : const AlwaysStoppedAnimation(0),
+          child: const Icon(Icons.radio),
+        ),
         title: Text(station.name),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
