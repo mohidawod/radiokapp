@@ -4,11 +4,13 @@ import 'package:radiokapp/screens/audio_handler.dart';
 import 'package:radiokapp/widgets/now_playing_bar.dart';
 
 class RadioStation {
+  final String id;
   final String name;
   final String url;
   bool isFavorite;
 
   RadioStation({
+    required this.id,
     required this.name,
     required this.url,
     this.isFavorite = false,
@@ -55,15 +57,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void _loadStations() {
     final stations = [
       RadioStation(
+        id: 'monte_carlo_doualiya',
         name: 'Monte Carlo Doualiya',
-        url: 'https://montecarlodoualiya128k.ice.infomaniak.ch/mc-doualiya.mp3',
+        url:
+            'https://montecarlodoualiya128k.ice.infomaniak.ch/mc-doualiya.mp3',
       ),
       // أضف باقي المحطات هنا...
     ];
 
     final savedFavorites = _prefs.getStringList('favorites') ?? [];
     for (var station in stations) {
-      if (savedFavorites.contains(station.name)) {
+      if (savedFavorites.contains(station.id)) {
         station.isFavorite = true;
       }
     }
@@ -71,9 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _saveFavorites() async {
-    final favoriteNames =
-        _stations.where((s) => s.isFavorite).map((s) => s.name).toList();
-    await _prefs.setStringList('favorites', favoriteNames);
+    final favoriteIds =
+        _stations.where((s) => s.isFavorite).map((s) => s.id).toList();
+    await _prefs.setStringList('favorites', favoriteIds);
   }
 
   void _toggleFavorite(RadioStation station) {
@@ -128,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _stations
                       .firstWhere(
                         (s) => s.url == _currentStationUrl,
-                        orElse: () => RadioStation(name: '', url: ''),
+                        orElse: () => RadioStation(id: '', name: '', url: ''),
                       )
                       .name,
             ),

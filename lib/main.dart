@@ -93,56 +93,67 @@ class _MyAppState extends State<MyApp> {
   void _loadStations() {
     _stations = [
       RadioStation(
+        id: 'monte_carlo_doualiya',
         name: 'Monte Carlo Doualiya',
         url: 'https://montecarlodoualiya128k.ice.infomaniak.ch/mc-doualiya.mp3',
       ),
       RadioStation(
+        id: 'bbc_english',
         name: 'BBC English',
         url: 'http://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
       ),
       RadioStation(
+        id: 'radio_asharq',
         name: 'Radio Asharq',
         url:
             'https://l3.itworkscdn.net/asharqradioalive/asharqradioa/icecast.audio',
       ),
       RadioStation(
+        id: 'mishary_alafasy',
         name: ' Mishary Alafasy ',
         url: 'https://qurango.net/radio/mishary_alafasi',
       ),
       RadioStation(
+        id: 'radio_dabangasudan',
         name: 'Radio Dabangasudan',
         url: 'https://stream.dabangasudan.org',
       ),
       RadioStation(
+        id: 'bbc_arabic',
         name: 'BBC Arabic',
         url: 'http://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
       ),
       RadioStation(
+        id: 'al_araby',
         name: 'Al araby',
         url:
             'https://l3.itworkscdn.net/alarabyradiolive/alarabyradio_audio/icecast.audio',
       ),
       RadioStation(
+        id: 'saudi_tv_english',
         name: 'Saudi TV English',
         url: 'http://104.7.66.64:8010/;?icy=http',
       ),
       RadioStation(
+        id: 'alifalif_fm',
         name: 'AlifAlif FM',
         url: 'https://alifalifjobs.com/radio/8000/AlifAlifLive.mp3',
       ),
       RadioStation(
+        id: 'mix_fm_ksa',
         name: 'MIX FM KSA',
         url: 'https://s1.voscast.com:11377/live.mp3',
       ),
       RadioStation(
-        name: '	sky news UK',
+        id: 'sky_news_uk',
+        name: 'Sky News UK',
         url: 'https://tunein.cdnstream1.com/3688_96.mp3?',
       ),
     ];
 
     final favorites = _prefs.getStringList('favorites') ?? [];
     for (var station in _stations) {
-      station.isFavorite = favorites.contains(station.name);
+      station.isFavorite = favorites.contains(station.id);
     }
   }
 
@@ -177,7 +188,7 @@ class _MyAppState extends State<MyApp> {
     station.isFavorite = !station.isFavorite;
     _prefs.setStringList(
       'favorites',
-      _stations.where((s) => s.isFavorite).map((s) => s.name).toList(),
+      _stations.where((s) => s.isFavorite).map((s) => s.id).toList(),
     );
     setState(() {});
   }
@@ -345,11 +356,13 @@ class _MyAppState extends State<MyApp> {
 }
 
 class RadioStation {
+  final String id;
   final String name;
   final String url;
   bool isFavorite;
 
   RadioStation({
+    required this.id,
     required this.name,
     required this.url,
     this.isFavorite = false,
