@@ -1,0 +1,9 @@
+{
+  "errorAlert": {
+    "title": "حدث خطأ",
+    "reason": "السبب: {{reason}}",
+    "suggestion": "الاقتراح: {{suggestion}}",
+    "showDetails": "عرض التفاصيل",
+    "hideDetails": "إخفاء التفاصيل"
+  }
+}

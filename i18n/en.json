@@ -1,0 +1,9 @@
+{
+  "errorAlert": {
+    "title": "An error occurred",
+    "reason": "Reason: {{reason}}",
+    "suggestion": "Suggested fix: {{suggestion}}",
+    "showDetails": "Show details",
+    "hideDetails": "Hide details"
+  }
+}
