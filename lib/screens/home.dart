@@ -235,17 +235,33 @@ class _HomeScreenState extends State<HomeScreen> {
       itemBuilder: (context, index) {
         final station = favorites[index];
         final isCurrent = _currentStationUrl == station.url;
-        return ListTile(
-          leading: Icon(
-            Icons.radio,
-            color: isCurrent ? Colors.blue : Colors.grey,
+        return Dismissible(
+          key: ValueKey(station.url),
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.only(left: 20),
+            child: const Icon(Icons.delete, color: Colors.white),
           ),
-          title: Text(station.name),
-          trailing: IconButton(
-            icon: const Icon(Icons.favorite, color: Colors.red),
-            onPressed: () => _toggleFavorite(station),
+          secondaryBackground: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20),
+            child: const Icon(Icons.delete, color: Colors.white),
           ),
-          onTap: () => _selectStation(station),
+          onDismissed: (direction) => _toggleFavorite(station),
+          child: ListTile(
+            leading: Icon(
+              Icons.radio,
+              color: isCurrent ? Colors.blue : Colors.grey,
+            ),
+            title: Text(station.name),
+            trailing: IconButton(
+              icon: const Icon(Icons.favorite, color: Colors.red),
+              onPressed: () => _toggleFavorite(station),
+            ),
+            onTap: () => _selectStation(station),
+          ),
         );
       },
     );
