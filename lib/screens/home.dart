@@ -2,18 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:radiokapp/screens/audio_handler.dart';
 import 'package:radiokapp/widgets/now_playing_bar.dart';
-
-class RadioStation {
-  final String name;
-  final String url;
-  bool isFavorite;
-
-  RadioStation({
-    required this.name,
-    required this.url,
-    this.isFavorite = false,
-  });
-}
+import 'package:radiokapp/models/radio_station.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isDarkMode;
