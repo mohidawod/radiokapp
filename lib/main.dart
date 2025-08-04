@@ -326,6 +326,12 @@ class _MyAppState extends State<MyApp> {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: isPlaying
+                  ? const Icon(Icons.equalizer, key: ValueKey('playing'))
+                  : const SizedBox.shrink(key: ValueKey('stopped')),
+            ),
             IconButton(
               icon: Icon(
                 station.isFavorite ? Icons.favorite : Icons.favorite_border,
