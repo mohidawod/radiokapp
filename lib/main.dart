@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'error_banner.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -263,10 +264,7 @@ class _MyAppState extends State<MyApp> {
               if (_errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.all(8),
-                  child: Text(
-                    _errorMessage!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
+                  child: ErrorBanner(message: _errorMessage!),
                 ),
               Expanded(child: _buildCurrentScreen()),
             ],
