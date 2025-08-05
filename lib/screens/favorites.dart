@@ -80,12 +80,6 @@ class FavoritesScreen extends StatelessWidget {
           ),
           NowPlayingBar(
             audioHandler: audioHandler,
-            currentStationName:
-                favoriteStations.firstWhere(
-                  (s) => s['url'] == currentStationUrl,
-                  orElse: () => {'name': ''},
-                )['name'] ??
-                '',
           ),
         ],
       ),

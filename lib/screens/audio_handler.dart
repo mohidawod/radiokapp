@@ -75,6 +75,22 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
   @override
   Future<void> stop() async {
     await _player.stop();
+    playbackState.add(
+      PlaybackState(
+        controls: const [MediaControl.play],
+        systemActions: const {
+          MediaAction.play,
+          MediaAction.pause,
+          MediaAction.stop,
+        },
+        androidCompactActionIndices: const [0],
+        playing: false,
+        processingState: AudioProcessingState.idle,
+        updatePosition: Duration.zero,
+        bufferedPosition: Duration.zero,
+        speed: 1.0,
+      ),
+    );
     mediaItem.add(null);
   }
 

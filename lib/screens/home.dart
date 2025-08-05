@@ -124,13 +124,6 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(child: _buildCurrentScreen()),
             NowPlayingBar(
               audioHandler: widget.audioHandler,
-              currentStationName:
-                  _stations
-                      .firstWhere(
-                        (s) => s.url == _currentStationUrl,
-                        orElse: () => RadioStation(name: '', url: ''),
-                      )
-                      .name,
             ),
           ],
         ),
