@@ -11,10 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  just_audio: ^0.10.4
+  just_audio: ^0.10.5
   audio_session: ^0.2.2
   shared_preferences: ^2.2.2
-  audio_service: ^0.18.18
+  audio_service: ^0.18.19
+  just_audio_background: ^0.0.5
 
 dev_dependencies:
   flutter_test:
