@@ -35,18 +35,17 @@ class RadioController {
       }
 
       await _player.setVolume(_volume);
-      await _player.setUrl(url);
-      await _player.play();
-
-      // تحديث إشعار الخلفية
-      AudioServiceBackground.setMediaItem(
-        MediaItem(
+      final source = AudioSource.uri(
+        Uri.parse(url),
+        tag: MediaItem(
           id: url,
           title: 'إذاعة مباشرة',
           artist: 'Radio K',
           artUri: Uri.parse('https://via.placeholder.com/150'),
         ),
       );
+      await _player.setAudioSource(source);
+      await _player.play();
 
       currentStationUrl = url;
     } catch (e) {

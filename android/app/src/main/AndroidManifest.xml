@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.radiokapp">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:label="radiokapp"
         android:name="${applicationName}"
@@ -35,6 +38,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <service
+            android:name="com.ryanheise.audioservice.AudioService"
+            android:exported="false" />
     </application>
 
     <!-- Required to query activities that can process text -->
