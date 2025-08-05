@@ -11,7 +11,7 @@ class AudioHandler extends BaseAudioHandler with SeekHandler {
 
   Future<void> _init() async {
     final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration.speech());
+    await session.configure(const AudioSessionConfiguration.music());
 
     mediaItem.add(
       MediaItem(
