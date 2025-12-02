@@ -35,7 +35,7 @@ class WelcomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'مرحباً بكم في راديونا',
+                'إيقاع اللحظة الآن ',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
@@ -211,7 +211,7 @@ class _MyAppState extends State<MyApp> {
         textDirection: TextDirection.rtl,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('تطبيق راديو يلا'),
+            title: const Text('تطبيق راديوك'),
             actions: [
               IconButton(
                 icon: const Icon(Icons.volume_up),
