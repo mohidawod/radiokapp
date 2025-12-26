@@ -46,34 +46,64 @@ class FavoritesScreen extends StatelessWidget {
                         final url = station['url'];
                         final isCurrent = currentStationUrl == url;
 
-                        return ListTile(
-                          leading: Icon(
-                            Icons.radio,
-                            color: isCurrent ? Colors.blue : Colors.grey,
+                        final dismissibleBackground = Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        );
+
+                        return Dismissible(
+                          key: Key(station['url'] ?? station['name'] ?? ''),
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerLeft,
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20),
+                            child:
+                                const Icon(Icons.delete, color: Colors.white),
                           ),
-                          title: Text(
-                            station['name'] ?? 'محطة غير معروفة',
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  isCurrent ? Icons.stop : Icons.play_arrow,
+                          secondaryBackground: dismissibleBackground,
+                          onDismissed: (_) async {
+                            if (currentStationUrl == url) {
+                              await audioHandler.stop();
+                            }
+                            onRemove(station);
+                          },
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.radio,
+                              color: isCurrent ? Colors.blue : Colors.grey,
+                            ),
+                            title: Text(
+                              station['name'] ?? 'محطة غير معروفة',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(
+                                    isCurrent ? Icons.stop : Icons.play_arrow,
+                                  ),
+                                  onPressed: () => _handleTap(station),
                                 ),
-                                onPressed: () => _handleTap(station),
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () async {
+                                    if (currentStationUrl == url) {
+                                      await audioHandler.stop();
+                                    }
+                                    onRemove(station);
+                                  },
                                 ),
-                                onPressed: () => onRemove(station),
-                              ),
-                            ],
+                              ],
+                            ),
+                            onTap: () => _handleTap(station),
                           ),
-                          onTap: () => _handleTap(station),
                         );
                       },
                     ),
